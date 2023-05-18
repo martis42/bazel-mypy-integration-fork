@@ -72,25 +72,31 @@ If there's a typing error in your Python code, then the test will fail. Using `-
 
 ## Installation
 
-**1. Create a file that will specify the version of `mypy` to use.** You will pass the Bazel label for
-this file to the `deps()` function in `@mypy_integration//repositories:deps.bzl`, which below is named
-`mypy_integration_deps(...)`:
+**1. Create a resolved requirements file that will specify the version of `mypy` to use and its dependencies** </br>
+You will pass the Bazel label for this file to the `deps()` function in `@mypy_integration//repositories:deps.bzl`, which below is named`mypy_integration_deps(...)`.
 
-```
-mypy==0.790
-``` 
+Providing a resolved requirements file is required as the transitive dependencies can differ depending on your Python interpreter version.
+[third_party](third_party) shows you how to use `rules_python` to generate a file resolving all dependencies for mypy.
 
 ❣️ Ensure that your selected MyPy version is compatible with your Python version. Incompatibilities can produce [obscure looking errors](https://github.com/thundergolfer/bazel-mypy-integration/issues/38).
 
-(In the [`examples/`](examples/) Bazel workspace this file is specified in [`tools/typing/`](examples/tools/typing))
-
 **2. Next, copy the `WORKSPACE` snippet**
 
-This can be found in the [releases page](https://github.com/thundergolfer/bazel-mypy-integration/releases)
-for the release you use.
+where `<resolved_mypy_requirements>` is the mypy requirements file from step 1.
 
-_Note_ that by default `mypy_integration_deps` will default to passing `"python3"` as the interpreter used at install,
-but this can be overridden by setting `python_interpreter` or `python_interpreter_target` (but not both).
+```python
+load("@mypy_integration//repositories:repositories.bzl", mypy_integration_repositories = "repositories")
+mypy_integration_repositories()
+
+load("@mypy_integration//repositories:deps.bzl", mypy_integration_deps = "deps")
+mypy_integration_deps(<resolved_mypy_requirements>)
+
+load("@mypy_integration_pip_deps//:requirements.bzl", install_mypy_deps = "install_deps")
+install_mypy_deps()
+```
+
+_Note_ that by default `mypy_integration_deps` will use the `python3` binary on your host as the interpreter for parsing the mypy requirements file.
+You can override this by setting `python_interpreter` or `python_interpreter_target` (but not both).
 
 **3. Finally, if using the Bazel Aspect, add the following to your `.bazelrc` so that MyPy checking is run whenever
 Python code is built:**

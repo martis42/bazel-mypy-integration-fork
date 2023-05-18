@@ -10,7 +10,11 @@ mypy_integration_repositories()
 
 load("//repositories:deps.bzl", mypy_integration_deps = "deps")
 
-mypy_integration_deps("//:current_mypy_version.txt")
+mypy_integration_deps("//third_party:requirements.txt")
+
+load("@mypy_integration_pip_deps//:requirements.bzl", install_mypy_deps = "install_deps")
+
+install_mypy_deps()
 
 http_archive(
     name = "buildifier_prebuilt",
