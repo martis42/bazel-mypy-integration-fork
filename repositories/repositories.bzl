@@ -7,7 +7,7 @@ load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
 def repositories():
     versions = struct(
         rules_python = "0.1.0",
-        bazel_skylib = "1.0.2",
+        bazel_skylib = "1.2.0",
     )
 
     maybe(
@@ -25,5 +25,5 @@ def repositories():
             "https://mirror.bazel.build/github.com/bazelbuild/bazel-skylib/releases/download/{v}/bazel-skylib-{v}.tar.gz".format(v = versions.bazel_skylib),
             "https://github.com/bazelbuild/bazel-skylib/releases/download/{v}/bazel-skylib-{v}.tar.gz".format(v = versions.bazel_skylib),
         ],
-        sha256 = "97e70364e9249702246c0e9444bccdc4b847bed1eb03c5a3ece4f83dfe6abc44",
+        sha256 = "af87959afe497dc8dfd4c6cb66e1279cb98ccc84284619ebfec27d9c09a903de",
     )
